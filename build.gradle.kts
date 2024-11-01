@@ -39,6 +39,8 @@ repositories {
 }
 
 dependencies {
+    compileOnly("com.google.code.gson:gson:2.11.0")
+    compileOnly("com.google.guava:guava:33.3.1-jre")
     compileOnly("ink.ptms.core:v12004:12004:mapped")
     compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))

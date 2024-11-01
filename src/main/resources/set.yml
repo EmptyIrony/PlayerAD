@@ -1,0 +1,14 @@
+穷鬼套餐:
+  time: 1d
+  split: 30m
+  length_limit: 80
+  cost:
+    money: 30000
+    points: 500
+穷鬼套餐+:
+  time: 2d
+  split: 30m
+  length_limit: 80
+  cost:
+    money: 200000
+    points: 500

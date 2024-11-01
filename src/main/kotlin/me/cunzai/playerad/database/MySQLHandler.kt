@@ -31,6 +31,11 @@ object MySQLHandler {
                 id()
             }
 
+            // 请求uuid
+            add("uuid") {
+                type(ColumnTypeSQL.VARCHAR, 36)
+            }
+
             add ("requester"){
                 type(ColumnTypeSQL.VARCHAR, 36)
             }
@@ -88,6 +93,7 @@ object MySQLHandler {
         requestTable.workspace(datasource) {
             createTable(checkExists = true)
             createIndex(Index("idx_requester", listOf("requester"), checkExists = true))
+            createIndex(Index("idx_uuid", listOf("uuid"), checkExists = true))
         }.run()
     }
 
@@ -95,6 +101,7 @@ object MySQLHandler {
         return requestTable.select(datasource) {}.map {
             RequestData(
                 getString("requester"),
+                UUID.fromString(getString("uuid")),
                 getString("contents"),
                 getString("duration_name")
             )
@@ -110,6 +117,12 @@ object MySQLHandler {
                 getString("duration_name"),
                 getString("contents")
             )
+        }
+    }
+
+    fun insertRequest(requestData: RequestData) {
+        adTable.insert(datasource, "requester", "contents", "duration_name") {
+            value(requestData.requester, requestData.contents, requestData.durationName)
         }
     }
 

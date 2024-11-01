@@ -1,0 +1,8 @@
+input_chat: "&a请直接在聊天栏中输入广告内容, 请在30秒内输入完毕"
+input_timeout: "&c输入超时"
+input_confirm: "&a你的广告内容为: \n{0}\n, 点击本消息以确认提交!"
+expired: "&c广告请求已过期"
+
+commit_success: "&a提交成功! 等待管理员审核"
+no_money: "&c金币不足"
+no_points: "&c点券不足"

@@ -1,0 +1,21 @@
+title: "购买广告"
+format:
+  - "#########"
+  - "# ! ! ! #"
+  - "# ! ! ! #"
+  - "# ! ! ! #"
+  - "#########"
+placeholder:
+  material: GRAY_STAINED_GLASS_PANE
+  name: "&c"
+ad:
+  material: CHEST
+  name: "&b%name%"
+  lore:
+    - "&a持续时间: &e%duration%"
+    - "&a间隔时间: &e%split%"
+    - "&a消息长度限制: &e%length%"
+    - ""
+    - "&a售价:"
+    - "&a  金币: &e%money%"
+    - "&a  点券: &e%points%"
