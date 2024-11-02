@@ -126,9 +126,21 @@ object MySQLHandler {
     }
 
     fun insertRequest(requestData: RequestData) {
-        adTable.insert(datasource, "requester", "contents", "duration_name") {
-            value(requestData.requester, requestData.contents, requestData.durationName)
+        requestTable.insert(datasource, "uuid", "requester", "contents", "duration_name") {
+            value(requestData.uuid.toString(), requestData.requester, requestData.contents, requestData.durationName)
         }
+    }
+
+    fun deleteRequest(requestData: RequestData) {
+        requestTable.delete(datasource) {
+            where {
+                "uuid" eq requestData.uuid.toString()
+            }
+        }
+    }
+
+    fun insertAD(adData: AdData) {
+
     }
 
 

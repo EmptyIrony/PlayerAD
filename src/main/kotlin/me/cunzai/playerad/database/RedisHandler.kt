@@ -21,9 +21,9 @@ object RedisHandler {
     @Config("database.yml")
     lateinit var config: Configuration
 
-    private val gson = Gson()
+    val gson = Gson()
 
-    private val redis by lazy {
+    val redis by lazy {
         AlkaidRedis.create()
             .fromConfig(config.getConfigurationSection("redis")!!)
             .connect()
