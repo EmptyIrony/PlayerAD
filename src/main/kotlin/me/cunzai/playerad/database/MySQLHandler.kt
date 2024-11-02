@@ -109,11 +109,16 @@ object MySQLHandler {
     }
 
     fun getAllAds(): List<AdData> {
-        return adTable.select(datasource) {}.map {
+        return adTable.select(datasource) {
+            where {
+                "end_time" lt System.currentTimeMillis()
+            }
+        }.map {
             AdData(
                 UUID.fromString(getString("uuid")),
                 getString("sender"),
                 getLong("start_time"),
+                getLong("end_time"),
                 getString("duration_name"),
                 getString("contents")
             )

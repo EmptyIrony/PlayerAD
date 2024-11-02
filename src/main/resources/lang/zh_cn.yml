@@ -6,3 +6,8 @@ expired: "&c广告请求已过期"
 commit_success: "&a提交成功! 等待管理员审核"
 no_money: "&c金币不足"
 no_points: "&c点券不足"
+
+ad_passed: "&a你的广告 {0} &a已通过审核"
+ad_rejected: "&c你的广告 {0} &c未通过审核"
+
+ad_contents: "&b[广告系统] &r{0}"

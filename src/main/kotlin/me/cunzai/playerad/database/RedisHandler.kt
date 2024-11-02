@@ -2,14 +2,18 @@ package me.cunzai.playerad.database
 
 import com.google.gson.Gson
 import me.cunzai.playerad.data.RequestData
+import me.cunzai.playerad.handler.AdHandler
+import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
+import taboolib.common.platform.function.submitAsync
 import taboolib.expansion.AlkaidRedis
 import taboolib.expansion.fromConfig
 import taboolib.module.chat.colored
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.platform.util.onlinePlayers
+import taboolib.platform.util.sendLang
 import java.util.UUID
 
 object RedisHandler {
@@ -17,7 +21,7 @@ object RedisHandler {
     @Config("database.yml")
     lateinit var config: Configuration
 
-    val gson = Gson()
+    private val gson = Gson()
 
     private val redis by lazy {
         AlkaidRedis.create()
@@ -41,15 +45,25 @@ object RedisHandler {
                     }
                 }
                 "player_ad_request_status" -> {
+                    val data = gson.fromJson(message, AdRequestStatus::class.java)
+                    Bukkit.getPlayerExact(data.requestData.requester)?.apply {
+                        if (data.passed) {
+                            sendLang("ad_passed", data.requestData.contents.colored())
+                        } else {
+                            sendLang("ad_rejected", data.requestData.contents.colored())
+                        }
+                    }
 
+                    submitAsync {
+                        AdHandler.activeAds = MySQLHandler.getAllAds()
+                    }
                 }
             }
         }
     }
 
     class AdRequestStatus(
-        val requester: String,
-        val requestUuid: UUID,
+        val requestData: RequestData,
         val passed: Boolean
     )
 
