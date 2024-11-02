@@ -55,14 +55,23 @@ object CheckUI {
                         event.isCancelled = true
                         val clickEvent = event.clickEventOrNull() ?: return@onClick
                         if (clickEvent.isLeftClick) {
-                            submitAsync { element.pass() }
-                        } else if (clickEvent.isRightClick) {
-                            submitAsync { element.reject() }
-                        } else {
+                            submitChain {
+                                element.pass()
+                                sync {
+                                    open(player)
+                                }
+                            }
                             return@onClick
                         }
-
-                        open(player)
+                        if (clickEvent.isRightClick) {
+                            submitChain {
+                                element.reject()
+                                sync {
+                                    open(player)
+                                }
+                            }
+                            return@onClick
+                        }
                     }
 
                 }

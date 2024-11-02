@@ -15,16 +15,15 @@ object AdHandler {
     fun schedule() {
         val now = System.currentTimeMillis()
         activeAds = activeAds.filter {
-            it.endTime <= now
+            it.endTime > now
         }
         val ads = activeAds
 
         val nowSeconds = now / 1000L
 
-
         for (ad in ads) {
             val adSet = ConfigLoader.sets[ad.durationName] ?: continue
-            if ((nowSeconds - (ad.startTime / 1000L) % (adSet.split / 1000L)) == 0L) {
+            if ((nowSeconds - (ad.startTime / 1000L)) % (adSet.split / 1000L) == 0L) {
                 Bukkit.broadcastMessage(console().asLangText("ad_contents", ad.contents))
             }
         }

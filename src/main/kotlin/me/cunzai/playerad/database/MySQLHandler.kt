@@ -2,6 +2,7 @@ package me.cunzai.playerad.database
 
 import me.cunzai.playerad.data.AdData
 import me.cunzai.playerad.data.RequestData
+import me.cunzai.playerad.handler.AdHandler
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.module.configuration.Config
@@ -95,6 +96,8 @@ object MySQLHandler {
             createIndex(Index("idx_requester", listOf("requester"), checkExists = true))
             createIndex(Index("idx_uuid", listOf("uuid"), checkExists = true))
         }.run()
+
+        AdHandler.activeAds = getAllAds()
     }
 
     fun getAllRequests(): List<RequestData> {
@@ -111,7 +114,7 @@ object MySQLHandler {
     fun getAllAds(): List<AdData> {
         return adTable.select(datasource) {
             where {
-                "end_time" lt System.currentTimeMillis()
+                "end_time" gte System.currentTimeMillis()
             }
         }.map {
             AdData(
@@ -140,7 +143,9 @@ object MySQLHandler {
     }
 
     fun insertAD(adData: AdData) {
-
+        adTable.insert(datasource, "uuid", "sender", "contents", "start_time", "end_time", "duration_name") {
+            value(adData.uuid.toString(), adData.sender, adData.contents, adData.startTime, adData.endTime, adData.durationName)
+        }
     }
 
 

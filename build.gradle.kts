@@ -24,6 +24,7 @@ taboolib {
         install(BukkitUtil)
         install(Database)
         install(DatabaseAlkaidRedis)
+        install(CommandHelper)
     }
     description {
         name = "PlayerAD"
@@ -31,7 +32,7 @@ taboolib {
             name("存在")
         }
     }
-    version { taboolib = "6.2.0-beta27" }
+    version { taboolib = "6.2.0-beta29" }
 }
 
 repositories {
