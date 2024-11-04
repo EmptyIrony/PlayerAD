@@ -11,3 +11,7 @@ ad_passed: "&a你的广告 {0} &a已通过审核"
 ad_rejected: "&c你的广告 {0} &c未通过审核"
 
 ad_contents: "&b[广告系统] &r{0}"
+
+too_long: "&c你的广告长度超过了 {0} 套餐上限"
+renew_success: "&a续费成功"
+too_many_ad: "&c一人只能发布两条广告"

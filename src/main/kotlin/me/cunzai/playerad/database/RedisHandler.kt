@@ -1,6 +1,7 @@
 package me.cunzai.playerad.database
 
 import com.google.gson.Gson
+import me.cunzai.playerad.data.AdData
 import me.cunzai.playerad.data.RequestData
 import me.cunzai.playerad.handler.AdHandler
 import org.bukkit.Bukkit
@@ -57,6 +58,12 @@ object RedisHandler {
                     submitAsync {
                         AdHandler.activeAds = MySQLHandler.getAllAds()
                     }
+                }
+                "player_ad_renew" -> {
+                    val data = gson.fromJson(message, AdData::class.java)
+                    AdHandler.activeAds = AdHandler.activeAds.filter {
+                        it.uuid != data.uuid
+                    } + data
                 }
             }
         }

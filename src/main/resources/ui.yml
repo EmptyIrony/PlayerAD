@@ -19,3 +19,16 @@ ad:
     - "&a售价:"
     - "&a  金币: &e%money%"
     - "&a  点券: &e%points%"
+renew:
+  material: CHEST
+  name: "&b%name%"
+  lore:
+    - "&a持续时间: &e%duration%"
+    - "&a间隔时间: &e%split%"
+    - ""
+    - "&a到期时间: &e%end%"
+    - "&a内容: &e%contents%"
+    - ""
+    - "&a售价:"
+    - "&a  金币: &e%money%"
+    - "&a  点券: &e%points%"

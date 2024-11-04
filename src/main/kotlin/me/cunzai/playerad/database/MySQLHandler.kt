@@ -142,6 +142,15 @@ object MySQLHandler {
         }
     }
 
+    fun updateAD(adData: AdData) {
+        adTable.update(datasource) {
+            set("end_time", adData.endTime)
+            where {
+                "uuid" eq adData.uuid.toString()
+            }
+        }
+    }
+
     fun insertAD(adData: AdData) {
         adTable.insert(datasource, "uuid", "sender", "contents", "start_time", "end_time", "duration_name") {
             value(adData.uuid.toString(), adData.sender, adData.contents, adData.startTime, adData.endTime, adData.durationName)

@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder
 import me.cunzai.playerad.config.ConfigLoader
 import me.cunzai.playerad.data.RequestData
 import me.cunzai.playerad.database.MySQLHandler
+import me.cunzai.playerad.handler.AdHandler
 import me.cunzai.playerad.util.millisToRoundedTime
 import org.black_ixx.playerpoints.PlayerPoints
 import org.bukkit.Sound
@@ -60,8 +61,21 @@ object AdUI {
                         return@execute
                     }
 
+                    if (argument.length > adSet.lengthLimit) {
+                        sender.sendLang("too_long", adSet.name)
+                        return@execute
+                    }
+
                     if (PlayerPoints.getInstance().api.look(sender.uniqueId) < adSet.costPoints) {
                         sender.sendLang("no_points")
+                        return@execute
+                    }
+
+                    val sent =
+                        AdHandler.activeAds.count { it.uuid == sender.uniqueId && it.endTime > System.currentTimeMillis() }
+
+                    if (sent >= 2) {
+                        sender.sendLang("too_many_ad")
                         return@execute
                     }
 
@@ -96,18 +110,49 @@ object AdUI {
             setList.forEachIndexed { index, adSet ->
                 val slotIndex = slot.getOrNull(index) ?: return@forEachIndexed
 
+                val existAd =
+                    AdHandler.activeAds.firstOrNull { it.uuid == player.uniqueId && it.durationName == adSet.name && it.endTime > System.currentTimeMillis() }
+
                 val replace = mapOf(
                     "%name%" to adSet.name,
                     "%duration%" to millisToRoundedTime(adSet.duration),
                     "%split%" to millisToRoundedTime(adSet.split),
                     "%length%" to adSet.lengthLimit.toString(),
                     "%money%" to adSet.costMoney.toString(),
-                    "%points%" to adSet.costPoints.toString()
+                    "%points%" to adSet.costPoints.toString(),
+                    "%end%" to (existAd?.endTime?.let {
+                        millisToRoundedTime(it)
+                    } ?: "无"),
+                    "%contents%" to (existAd?.contents ?: "无")
                 )
 
-                set(slotIndex, icon.clone().replaceName(replace).replaceLore(replace)) {
+                set(slotIndex, if (existAd != null) {
+                    config.getItemStack("renew")!!.clone().replaceName(replace).replaceLore(replace)
+                } else {
+                    icon.clone().replaceName(replace).replaceLore(replace)
+                }) {
                     isCancelled = true
                     player.closeInventory()
+
+                    if (existAd != null) {
+                        existAd.endTime += adSet.duration
+                        if (player.getBalance() < adSet.costMoney) {
+                            player.sendLang("no_money")
+                            return@set
+                        }
+
+                        if (PlayerPoints.getInstance().api.look(player.uniqueId) < adSet.costPoints) {
+                            player.sendLang("no_points")
+                            return@set
+                        }
+
+                        player.withdrawBalance(adSet.costMoney.toDouble())
+                        PlayerPoints.getInstance().api.take(player.uniqueId, adSet.costPoints)
+                        submitAsync {
+                            MySQLHandler.updateAD(existAd)
+                        }
+                        player.sendLang("renew_success")
+                    }
 
                     player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
 
